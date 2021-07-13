@@ -43,7 +43,7 @@ toolkit:
     package_name: github.com/bitrise-steplib/bitrise-step-export-universal-apk
 
 inputs:
-  - aab_path: $BITRISE_AAB_PATH
+  - aab_path_list: $BITRISE_AAB_PATH_LIST
     opts:
       title: "Android App Bundle path"
       summary: "Android App Bundle file (`.aab`) path"
@@ -86,7 +86,7 @@ inputs:
       is_expand: true
 
 outputs:
-  - BITRISE_APK_PATH:
+  - BITRISE_APK_PATH_LIST:
     opts:
       title: "The exported APK's path"
       summary: "The APK is exported to this output Environment Variable and can be picked up by the next Step or Ship."
