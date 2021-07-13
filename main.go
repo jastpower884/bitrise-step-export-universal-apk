@@ -40,12 +40,12 @@ func main() {
 	log.Infof("bundletool path created at: %s", bundletoolTool.Path())
 
 	exporter := apkexporter.New(bundletoolTool, filedownloader.New(http.DefaultClient))
-	keystoreCfg := parseKeystoreConfig(config)
 
 	aabPathList := parseAppList(config.AABPathList)
 
 	apkPaths := make([]string, 0)
 	for _, aabPath := range aabPathList {
+		keystoreCfg := parseKeystoreConfig(config)
 		apkPath, err := exporter.ExportUniversalAPK(aabPath, config.DeployDir, keystoreCfg)
 		if err != nil {
 			failf("Failed to export apk, error: %s \n", err)
