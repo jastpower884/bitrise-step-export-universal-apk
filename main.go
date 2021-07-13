@@ -52,11 +52,11 @@ func main() {
 		}
 
 		//if err = tools.ExportEnvironmentWithEnvman("BITRISE_APK_PATH", apkPath); err != nil {
-		aabPathList = append(apkPaths, aabPath)
+		apkPaths = append(apkPaths, apkPath)
 		log.Donef("Success! APK exported to: %s", apkPath)
 	}
 
-	joinedAPKOutputPaths := strings.Join(aabPathList, "|")
+	joinedAPKOutputPaths := strings.Join(apkPaths, "|")
 
 	if err = tools.ExportEnvironmentWithEnvman("BITRISE_APK_PATH_LIST", joinedAPKOutputPaths); err != nil {
 		failf("Failed to export BITRISE_APK_PATH, error: %s \n", err)
