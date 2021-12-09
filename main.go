@@ -42,10 +42,11 @@ func main() {
 
 	exporter := apkexporter.New(bundletoolTool, filedownloader.New(http.DefaultClient))
 
-	aabPathList := find("/bitrise/deploy/", ".aab")
+	aabPaths := find("/bitrise/deploy/", ".aab")
 
 	apkPaths := make([]string, 0)
-	for _, aabPath := range aabPathList {
+	for _, aabPath := range aabPaths {
+		log.Infof("Starting export APK from: %s!", aabPath)
 		keystoreCfg := parseKeystoreConfig(config)
 		apkPath, err := exporter.ExportUniversalAPK(aabPath, config.DeployDir, keystoreCfg)
 		if err != nil {
@@ -58,8 +59,11 @@ func main() {
 	}
 
 	joinedAPKOutputPaths := strings.Join(apkPaths, "|")
-
+	joinedAABOutputPaths := strings.Join(aabPaths, "|")
 	if err = tools.ExportEnvironmentWithEnvman("BITRISE_APK_PATH_LIST", joinedAPKOutputPaths); err != nil {
+		failf("Failed to export BITRISE_APK_PATH, error: %s \n", err)
+	}
+	if err = tools.ExportEnvironmentWithEnvman("BITRISE_AAB_PATH_LIST", joinedAABOutputPaths); err != nil {
 		failf("Failed to export BITRISE_APK_PATH, error: %s \n", err)
 	}
 	os.Exit(0)
