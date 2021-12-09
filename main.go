@@ -2,22 +2,23 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	"os"
-	"strings"
-
 	"github.com/bitrise-io/go-steputils/stepconf"
 	"github.com/bitrise-io/go-steputils/tools"
-	"github.com/bitrise-io/go-utils/log"
 	"github.com/bitrise-steplib/bitrise-step-export-universal-apk/apkexporter"
-	"github.com/bitrise-steplib/bitrise-step-export-universal-apk/bundletool"
 	"github.com/bitrise-steplib/bitrise-step-export-universal-apk/filedownloader"
+	"io/fs"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+
+	"github.com/bitrise-io/go-utils/log"
+	"github.com/bitrise-steplib/bitrise-step-export-universal-apk/bundletool"
 )
 
 // Config is defining the input arguments required by the Step.
 type Config struct {
 	DeployDir         string `env:"BITRISE_DEPLOY_DIR"`
-	AABPathList       string `env:"aab_path_list,required"`
 	KeystoreURL       string `env:"keystore_url"`
 	KeystotePassword  string `env:"keystore_password"`
 	KeyAlias          string `env:"keystore_alias"`
@@ -41,7 +42,7 @@ func main() {
 
 	exporter := apkexporter.New(bundletoolTool, filedownloader.New(http.DefaultClient))
 
-	aabPathList := parseAppList(config.AABPathList)
+	aabPathList := find("/bitrise/deploy/", ".aab")
 
 	apkPaths := make([]string, 0)
 	for _, aabPath := range aabPathList {
@@ -109,4 +110,18 @@ func parseAppList(list string) (apps []string) {
 		}
 	}
 	return
+}
+
+func find(root, ext string) []string {
+	var a []string
+	filepath.WalkDir(root, func(s string, d fs.DirEntry, e error) error {
+		if e != nil {
+			return e
+		}
+		if filepath.Ext(d.Name()) == ext {
+			a = append(a, s)
+		}
+		return nil
+	})
+	return a
 }

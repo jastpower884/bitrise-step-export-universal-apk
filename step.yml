@@ -43,14 +43,6 @@ toolkit:
     package_name: github.com/bitrise-steplib/bitrise-step-export-universal-apk
 
 inputs:
-  - aab_path_list: $BITRISE_AAB_PATH_LIST
-    opts:
-      title: "Android App Bundle path"
-      summary: "Android App Bundle file (`.aab`) path"
-      description: |
-        The **Android App Bundle path** input field is automatically filled out by the output of the previous build Step
-      is_expand: true
-      is_required: true
   - keystore_url: $BITRISEIO_ANDROID_KEYSTORE_URL
     opts:
       title: "Keystore URL"
